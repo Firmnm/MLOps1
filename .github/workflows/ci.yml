@@ -1,61 +1,35 @@
-name: Continuous Integration
-
-on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
-  workflow_dispatch:
-
-permissions: write-all
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+    - name: Checkout Repository
+      uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: '3.10'
+    - name: Install Packages
+      run: make install
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
+    - name: Format Code
+      run: make format
 
-      - name: Install Python Packages
-        run: make install
+    - name: Train Model
+      run: make train
 
-      - name: Install CML
-        run: |
-          npm install -g @dvcorg/cml || echo "CML installation failed, will use fallback"
-          if command -v cml &> /dev/null; then
-            echo "CML installed successfully"
-            cml --version
-          else
-            echo "CML not available, will use fallback evaluation"
-          fi
+    - name: Setup Node.js (for CML)
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
 
-      - name: Format Code
-        run: make format
+    - name: Install CML
+      run: npm install -g @dvcorg/cml
 
-      - name: Evaluate Model
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          make train
-          if command -v cml &> /dev/null; then
-            make eval
-          else
-            echo "CML not available, using fallback evaluation"
-            make eval-no-cml
-          fi
+    - name: Evaluate Model
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: make eval
 
-      - name: Update Repository
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: make update-branch
+    - name: Update Branch
+      env:
+        NAME: ${{ secrets.USER_NAME }}
+        EMAIL: ${{ secrets.USER_EMAIL }}
+      run: make update-branch USER_NAME=$NAME USER_EMAIL=$EMAIL

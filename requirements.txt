@@ -32,6 +32,7 @@ scipy>=1.9.0
 
 # MLOps and Monitoring
 evidently>=0.4.0
+cml>=0.20.0
 
 # Web Framework (for future API development)
 fastapi>=0.100.0

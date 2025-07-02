@@ -17,19 +17,35 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.9
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
       - name: Install Packages
-        run: make install
+        run: |
+          make install
+          npm install -g @dvcorg/cml
 
       - name: Format Code
         run: make format
 
-      - name: Train Model
-        run: make train
-
       - name: Evaluate Model
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: make eval
+        run: |
+          make train
+          if command -v cml &> /dev/null; then
+            make eval
+          else
+            echo "CML not available, using fallback evaluation"
+            make eval-no-cml
+          fi
 
       - name: Update Branch
         env:

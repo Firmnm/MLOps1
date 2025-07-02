@@ -20,17 +20,25 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
-          python-version: 3.9
+          python-version: '3.10'
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-      - name: Install Packages
+      - name: Install Python Packages
+        run: make install
+
+      - name: Install CML
         run: |
-          make install
-          npm install -g @dvcorg/cml
+          npm install -g @dvcorg/cml || echo "CML installation failed, will use fallback"
+          if command -v cml &> /dev/null; then
+            echo "CML installed successfully"
+            cml --version
+          else
+            echo "CML not available, will use fallback evaluation"
+          fi
 
       - name: Format Code
         run: make format
@@ -47,8 +55,7 @@ jobs:
             make eval-no-cml
           fi
 
-      - name: Update Branch
+      - name: Update Repository
         env:
-          NAME: ${{ secrets.USER_NAME }}
-          EMAIL: ${{ secrets.USER_EMAIL }}
-        run: make update-branch USER_NAME=$NAME USER_EMAIL=$EMAIL
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: make update-branch

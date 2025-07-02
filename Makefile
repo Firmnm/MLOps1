@@ -23,3 +23,12 @@ update-branch:
 	git add Results/ report.md
 	git commit -m "Update: evaluation results" || echo "Nothing to commit"
 	git push origin main
+
+deploy:
+	git config user.name "$(USER_NAME)"
+	git config user.email "$(USER_EMAIL)"
+
+	echo "Deploying to Hugging Face with token $(HF_TOKEN)"
+	git remote set-url origin https://$(HF_TOKEN)@huggingface.co/username/repo-name
+	git push origin main
+

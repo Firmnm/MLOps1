@@ -37,7 +37,7 @@ deploy:
 	pip install huggingface_hub[cli]
 	huggingface-cli login --token "$(HF_TOKEN)"
 	@echo "🚀 Uploading main app file..."
-	huggingface-cli upload firmnnm/MLOpsDrugTest ./app/app.py app.py --repo-type=space --commit-message="Deploy main app file"
+	huggingface-cli upload firmnnm/MLOpsDrugTest ./app/drug_app.py drug_app.py --repo-type=space --commit-message="Deploy main app file"
 	@echo "📁 Uploading model file..."
 	huggingface-cli upload firmnnm/MLOpsDrugTest ./model/drug_pipeline.skops model/drug_pipeline.skops --repo-type=space --commit-message="Upload model file"
 	@echo "📋 Uploading requirements..."

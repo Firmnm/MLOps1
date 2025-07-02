@@ -17,7 +17,7 @@ eval:
 
 	cml comment create report.md
 
-	update-branch:
+update-branch:
 	git config user.name "$(USER_NAME)"
 	git config user.email "$(USER_EMAIL)"
 	git add Results/ report.md

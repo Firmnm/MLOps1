@@ -25,10 +25,28 @@ update-branch:
 	git push origin main
 
 deploy:
-	git config user.name "$(USER_NAME)"
-	git config user.email "$(USER_EMAIL)"
+	@echo "Deploying to Hugging Face Spaces..."
+	@echo "Checking HF token..."
+	@if [ -z "$(HF_TOKEN)" ]; then \
+		echo "❌ Error: HF token is empty!"; \
+		echo "Please check that HF_TOKEN secret is set in GitHub repository"; \
+		exit 1; \
+	else \
+		echo "✅ HF token is present"; \
+	fi
+	pip install huggingface_hub[cli]
+	huggingface-cli login --token "$(HF_TOKEN)"
+	@echo "🚀 Uploading main app file..."
+	huggingface-cli upload firmnnm/MLOpsDrugTest ./app/app.py app.py --repo-type=space --commit-message="Deploy main app file"
+	@echo "📁 Uploading model file..."
+	huggingface-cli upload firmnnm/MLOpsDrugTest ./model/drug_pipeline.skops model/drug_pipeline.skops --repo-type=space --commit-message="Upload model file"
+	@echo "📋 Uploading requirements..."
+	huggingface-cli upload firmnnm/MLOpsDrugTest ./requirements.txt requirements.txt --repo-type=space --commit-message="Upload requirements"
+	@echo "📄 Uploading README..."
+	huggingface-cli upload firmnnm/MLOpsDrugTest ./README.md README.md --repo-type=space --commit-message="Upload README"
+	@echo "✅ Deployment completed!"
 
-	echo "Deploying to Hugging Face with token $(HF_TOKEN)"
-	git remote set-url origin https://$(HF_TOKEN)@huggingface.co/username/repo-name
-	git push origin main
+run:
+	python app/app.py
 
+.PHONY: install format test train eval update-branch deploy run

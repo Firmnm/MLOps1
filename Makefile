@@ -39,7 +39,7 @@ deploy:
 	@echo "🚀 Uploading main app file..."
 	huggingface-cli upload firmnnm/MLOpsDrugTest ./App/drug_app.py drug_app.py --repo-type=space --commit-message="Deploy main app file"
 	@echo "📁 Uploading model file..."
-	huggingface-cli upload firmnnm/MLOpsDrugTest ./model/drug_pipeline.skops model/drug_pipeline.skops --repo-type=space --commit-message="Upload model file"
+	huggingface-cli upload firmnnm/MLOpsDrugTest ./Model/drug_pipeline.skops model/drug_pipeline.skops --repo-type=space --commit-message="Upload model file"
 	@echo "📋 Uploading requirements..."
 	huggingface-cli upload firmnnm/MLOpsDrugTest ./requirements.txt requirements.txt --repo-type=space --commit-message="Upload requirements"
 	@echo "📄 Uploading README..."

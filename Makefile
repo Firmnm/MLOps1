@@ -50,3 +50,4 @@ run:
 	python App/drug_app.py
 
 .PHONY: install format test train eval update-branch deploy run
+

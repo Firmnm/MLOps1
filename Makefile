@@ -16,3 +16,10 @@ eval:
 	echo '![Confusion Matrix](./Results/model_results.png)' >> report.md
 
 	cml comment create report.md
+
+	update-branch:
+	git config user.name "$(USER_NAME)"
+	git config user.email "$(USER_EMAIL)"
+	git add Results/ report.md
+	git commit -m "Update: evaluation results" || echo "Nothing to commit"
+	git push origin main
